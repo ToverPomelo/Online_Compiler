@@ -1,0 +1,34 @@
+	body {
+		background: #525252;
+	}
+	
+	.noselect {
+		-webkit-touch-callout: none;
+		-webkit-user-select: none;
+		-khtml-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
+	}
+	
+	.icon {
+		position: fixed;
+		width: 50px;
+		height: 50px;
+		font-size: 50px;
+		background: #64d5da5e;
+		border-radius: 50%;
+		text-align: center;
+		line-height: 0;
+		fill: #00000066;
+		z-index: 110;
+		border-style: hidden;
+		outline: none;
+		box-shadow: 0 3px 5px -1px rgba(0, 0, 0, .2), 0 6px 10px 0 rgba(0, 0, 0, .14), 0 1px 18px 0 rgba(0, 0, 0, .12);
+	}
+	
+	.font-center {
+		display: flex;
+		justify-content: center;
+		align-itens: center;
+	}

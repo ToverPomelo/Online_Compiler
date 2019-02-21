@@ -1,0 +1,9 @@
+cd ./compiler
+
+# 建立docker镜像，-t后面接镜像名
+docker build -t compiler:alpha .
+
+# 运行容器样例
+# 某些版本的docker要运行gdb的话需要 --security-opt seccomp=unconfined 参数
+# --name是容器别名，-it保证输入输出，-m限制内存，-v挂在目录
+docker run --security-opt seccomp=unconfined --name test -it -m 256m -v /home/tover/Programs/SCNU/docker/users/29:/home/test compiler:alpha gdb
