@@ -119,7 +119,8 @@
 
     //初始化并启动docker ws
     function setup() {
-        //ws=new WebSocket("ws://120.79.95.86:2376/containers/test/attach/ws?stream=1&stdin=1&stdout=1");
+        //这个根据具体的docker remote api的端口和链接来写，运行前请先保证docker remote api配置好 (!important)
+        //例子中的test2是容器名
         ws = new WebSocket("ws://localhost:2376/containers/test2/attach/ws?stream=1&stdin=1&stdout=1");
 
         //Listen for the connection open event then call the sendMessage function
@@ -156,7 +157,7 @@
             //console.log(e);
             //log("Message received: "+e.data+"->>Listen for new messages arriving at the client");
             //log("Message received: "+blobToString(e.data)+"->>Listen for new messages arriving at the client");
-            //某些版本的docker返回的是blob则需要用blobToString，某些是string则不需要
+            //某些版本的docker返回的是blob则需要用blobToString，某些是string则不需要 (!important)
             if(termStatus == "gdb"){term.write(gdb.gdbFilter(blobToString(e.data)));}  //gdb打开时用gdb过滤器对信息进行过滤
             else{ term.write(blobToString(e.data)); }  //否则直通
             //Close the socket once one message has arrived.
@@ -295,6 +296,7 @@
         if(compiled == false){alert("compile first!");}
         else{
             if(compileErr == 1){ alert("compiled error: "+comErrMsg); }
+            //这个根据具体编译后的可执行文件的目录来写 (!important)
             else{ sendMessage("/home/test/a.out\n"); }
         }
     }

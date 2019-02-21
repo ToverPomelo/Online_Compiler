@@ -27,6 +27,9 @@ public class MyHandler extends AbstractWebSocketHandler {
         }
         else if(message.getPayload().equals("gdb")){ cmd = "gdb"; }  //测试
         else if(message.getPayload().equals("compile")){  //编译代码
+            //这个根据具体的docker容器别名，代码路径，可执行文件路径来写 (!important)
+            //格式： docker exec -i 容器名 g++ 代码在容器内部的路径 -o 可执行文件在容器内存放的路径
+            //其中： -i 是保证容器输入输出的，-o是g++用于对可执行文件的重命名的（也可以用于改变路径）
             Process pr = rt.exec("docker exec -i test2 g++ /home/test/code.cpp -o /home/test/a.out");
 
             //SequenceInputStream是一个串联流，能够把两个流结合起来，通过该对象就可以将
@@ -50,6 +53,9 @@ public class MyHandler extends AbstractWebSocketHandler {
         }
         else if(message.getPayload().equals("debug")){  //运行gdb的docker
             System.out.println(
+                    //这个根据具体的docker容器别名，代码路径，可执行文件路径来写 (!important)
+                    //格式： docker exec -i 容器名 g++ -g 代码在容器内部的路径 -o 可执行文件（调试文件）在容器内存放的路径
+                    //其中： -i 是保证容器输入输出的，-g是g++用于保存调试信息的（调试必须），-o是g++用于对可执行文件的重命名的（也可以用于改变路径）
                     rt.exec("docker exec -i test2 g++ -g /home/test/code.cpp -o /home/test/debug").waitFor()
             );
             closeDocker();
@@ -59,6 +65,10 @@ public class MyHandler extends AbstractWebSocketHandler {
         System.out.println("creating");
         int run;
         //容器正在stop的话要等待stop完成后再run
+        //这个要根据具体路径、镜像名、限制内存大小来写 (!important)
+        //格式： "docker run --security-opt seccomp=unconfined --name 容器别名 -d -it -m 限制内存大小 -v 服务器目录:挂载进容器的目录 镜像名 "+cmd
+        //其中： --security-opt seccomp=unconfined是某些版本的docker打开gdb必须的参数，--name是给容器起别名，-d是后台运行，-it保证输入输出，-m限制内存大小，
+        //      -v挂载目录，cmd是启动容器后要运行的命令（这个是变量，不用自己写）
         while((run=rt.exec("docker run --security-opt seccomp=unconfined --name test2 -d -it -m 256m -v /home/tover/Programs/SCNU/docker/users/29:/home/test compiler:alpha "+cmd).waitFor()) != 0){
             Thread.sleep(2000);
         }

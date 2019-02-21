@@ -23,6 +23,7 @@ import java.util.Map;
 @RestController
 public class MainController {
 	private MainService mainService;
+	//这两个根据公钥和私钥的存放目录来写 (!important)
 	private final String PUBLIC_KEY_PATH = "/home/tover/Programs/SCNU/testSocket/test/src/main/webapp/resources/keys/public_key.der";
 	private final String PRIVATE_KEY_PATH = "/home/tover/Programs/SCNU/testSocket/test/src/main/webapp/resources/keys/private_key.der";
 	private OpenSSL openssl = new OpenSSL();
@@ -88,6 +89,7 @@ public class MainController {
 		//写入代码文件
 		//System.out.println(file);
 		try{
+			//这个根据代码存放的文件路径来写 (!important)
 			File writename = new File("/home/tover/Programs/SCNU/docker/users/29/code.cpp");
 			writename.createNewFile(); // 创建新文件
 			BufferedWriter out = new BufferedWriter(new FileWriter(writename));
