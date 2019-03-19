@@ -3,7 +3,7 @@
   User: tover
   Date: 19-1-16
   Time: 上午11:03
-  To change this template use File | Settings | File Templates.
+  Description: Test websocket.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>

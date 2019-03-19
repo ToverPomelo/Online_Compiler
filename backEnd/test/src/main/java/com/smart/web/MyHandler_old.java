@@ -1,4 +1,8 @@
 /*
+    Description: Abandoned.
+*/
+
+/*
 package com.smart.web;
 
 import org.springframework.web.socket.CloseStatus;

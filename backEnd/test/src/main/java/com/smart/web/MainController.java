@@ -1,24 +1,22 @@
+/*
+    Description: Controller.
+*/
+
 package com.smart.web;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
-//import com.smart.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.smart.service.MainService;
 
 import java.io.*;
-import java.math.BigInteger;
 import java.security.MessageDigest;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 public class MainController {
@@ -26,6 +24,9 @@ public class MainController {
 	private final String PUBLIC_KEY_PATH = "/home/tover/Programs/SCNU/testSocket/test/src/main/webapp/resources/keys/public_key.der";
 	private final String PRIVATE_KEY_PATH = "/home/tover/Programs/SCNU/testSocket/test/src/main/webapp/resources/keys/private_key.der";
 	private OpenSSL openssl = new OpenSSL();
+    private Gson gson = new Gson();
+    private final String rootURL = "/home/tover/Programs/SCNU/testSocket/data/test";
+	private final String chmod = "chmod 664 ";
 
 	MainController(){
 		try{
@@ -36,8 +37,7 @@ public class MainController {
 		}
 	}
 
-
-	@RequestMapping("hello.html")
+    @RequestMapping("hello.html")
 	public ModelAndView hello(HttpServletRequest req,HttpServletResponse rep){
 		return new ModelAndView("hello");
 	}
@@ -47,7 +47,18 @@ public class MainController {
 		return new ModelAndView("key");
 	}
 
-	@RequestMapping(value="getKey",method = RequestMethod.POST)
+    @RequestMapping("upload.html")
+    public ModelAndView upload(HttpServletRequest req,HttpServletResponse rep){
+        return new ModelAndView("upload");
+    }
+
+    @RequestMapping("file.html")
+    public ModelAndView file(HttpServletRequest req,HttpServletResponse rep){
+        return new ModelAndView("file");
+    }
+
+
+    @RequestMapping(value="getKey",method = RequestMethod.POST)
 	//返回公钥给前段用于加密
 	public String getKey(HttpServletRequest req,HttpServletResponse rep){
 		try{
@@ -99,6 +110,102 @@ public class MainController {
 
 		return "uploaded";
 	}
+/*
+    @RequestMapping(value="uploadFiles",method = RequestMethod.POST)
+    public String uploadFiles(HttpServletRequest req,HttpServletResponse rep){
+	    String files = req.getParameter("files");
+
+	    W2SAction fs = gson.fromJson(files, W2SAction.class);
+	    //System.out.println(fs.toString());
+		for(W2SData f : fs.getData()){
+			final String fileName = rootURL + f.getPath();
+			if(fileName.endsWith(File.separator)) return "not_a_file!";  //混进了目录名
+		}
+
+		for(W2SData f : fs.getData()){
+			//System.out.println(f.getPath());
+			//System.out.println(f.getContent());
+			final String fileName = rootURL + f.getPath();
+			//System.out.println(fileName);
+			try{
+				File file = new File(fileName);
+				//System.out.println(file.getParentFile());
+
+				if (!file.getParentFile().exists()){
+					if(!file.getParentFile().mkdirs()) {
+						return "mkdir_failed";  //创建上层目录失败
+					}
+				}
+
+				if(!file.exists()){
+					if(!file.createNewFile()){
+						return "touch_failed";  //创建文件失败
+					}
+				}
+				else{  //文件已存在
+					//比较hash
+				}
+				BufferedWriter out = new BufferedWriter(new FileWriter(file));
+				out.write(f.getContent());
+				out.flush();
+				Runtime.getRuntime().exec(chmod+fileName,null).waitFor();
+			}catch(Exception e){
+				e.printStackTrace();
+				return "failed";
+			}
+		}
+	    return "uploaded";
+    }
+
+	private static List<String> getFilesOnServer(File file){
+		File[] fs = file.listFiles();
+		List<String> filesPath = new ArrayList<String>();
+		for(File f:fs){
+			if(f.isDirectory())	//若是目录，则递归打印该目录下的文件
+				filesPath.addAll(getFilesOnServer(f));
+			if(f.isFile())		//若是文件，直接打印
+				filesPath.add(f.getPath());
+		}
+		return filesPath;
+	}
+
+	@RequestMapping(value="getFiles",method = RequestMethod.POST)
+	public String getFiles(HttpServletRequest req,HttpServletResponse rep){
+		W2SAction fs = new W2SAction();
+
+		List<String> filesPath = getFilesOnServer(new File(rootURL));  //获取用户目录全部文件绝对路径
+		//System.out.println(filesPath);
+		//System.out.println(filesPath.get(1).substring(rootURL.length()));
+
+		for(String fn : filesPath){
+			try{
+				W2SData f = new W2SData();
+				f.setPath(fn.substring(rootURL.length()));
+
+				StringBuffer buffer = new StringBuffer();
+				InputStream is = new FileInputStream(fn);
+				String line; // 用来保存每行读取的内容
+				BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+				line = reader.readLine(); // 读取第一行
+				while (line != null) { // 如果 line 为空说明读完了
+					buffer.append(line); // 将读到的内容添加到 buffer 中
+					buffer.append("\n"); // 添加换行符
+					line = reader.readLine(); // 读取下一行
+				}
+				reader.close();
+				is.close();
+				f.setContent(buffer.toString());
+
+				fs.getData().add(f);
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+
+		return gson.toJson(fs);
+	}
+*/
+
 
 	@RequestMapping("ws.html")
 	public ModelAndView ws(HttpServletRequest req,HttpServletResponse rep){

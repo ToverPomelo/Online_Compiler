@@ -1,3 +1,7 @@
+/*
+    Description: Test(no used).
+*/
+
 package com.smart.domain;
 
 import javax.persistence.Basic;

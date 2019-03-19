@@ -3,7 +3,9 @@
   User: tover
   Date: 19-2-16
   Time: 下午5:08
-  To change this template use File | Settings | File Templates.
+  Description: Online compiler.
+               Used docker remote API to provide user terminal.
+               Used websocket(different from the docker's) to contral.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
@@ -157,6 +159,7 @@
             //log("Message received: "+e.data+"->>Listen for new messages arriving at the client");
             //log("Message received: "+blobToString(e.data)+"->>Listen for new messages arriving at the client");
             //某些版本的docker返回的是blob则需要用blobToString，某些是string则不需要
+            console.log(blobToString(e.data));
             if(termStatus == "gdb"){term.write(gdb.gdbFilter(blobToString(e.data)));}  //gdb打开时用gdb过滤器对信息进行过滤
             else{ term.write(blobToString(e.data)); }  //否则直通
             //Close the socket once one message has arrived.
@@ -371,10 +374,10 @@
 
     //gdb类
     var gdb = gdb_init(function(){
-        /*console.log("variable: ");
+        console.log("variable: ");
         console.log(gdb.getVar());
         console.log("stack(frame):");
-        console.log(gdb.getStack());*/
+        console.log(gdb.getStack());
         showVariables(gdb.getVar());
         showStack(gdb.getStack());
     });

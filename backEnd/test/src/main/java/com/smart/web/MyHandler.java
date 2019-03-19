@@ -1,6 +1,6 @@
 /*
-    socket链接后的处理器
- */
+    Description: Handler for docker connection.
+*/
 
 package com.smart.web;
 

@@ -1,3 +1,7 @@
+/*
+    Description: Methods for encrypt and decrypt.
+*/
+
 package com.smart.web;
 
 import javax.crypto.Cipher;
